@@ -1,0 +1,149 @@
+<div class="mt-1 pl-1 pr-1">
+  <div class="card">
+    <div class="card-body">
+      <div class="row p-4">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" (click)="abrirModal('mdCliente')" class="btn btn-outline-primary">Nuevo Cliente</button>
+            <button type="button" (click)="abrirModal('mdArticulo')" class="btn btn-outline-warning">Nuevo Articulo</button>
+            <button type="button" (click)="abrirModal('mdOrden')" class="btn btn-outline-success">Nueva Orden</button>
+          </div>
+          <div class="long-title">
+            <h3>Lista de Clientes</h3>
+          </div>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm table-hover table-bordered">
+              <thead class="dx-header-row">
+                <tr>
+                  <th scope="col" *ngIf="!visible">Acción</th>
+                  <th scope="col">Nombres</th>
+                  <th scope="col">Apellidos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center" id="safila_{{index}}" *ngFor="let item of listaClientes; let index = index;">
+                  <td *ngIf="!visible" width="150">
+                    <button (click)="getRow(item, estados[0])" type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Editar">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>&nbsp;
+
+                    <button *ngIf="item.ordenes.length == 0" (click)="getRow(item, estados[1])" class="btn btn-outline-secondary btn-sm"  title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </button>&nbsp;
+                  </td>
+                  <td>{{item.nombres}}</td>
+                  <td>{{item.apellidos}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="long-title">
+            <h3>Lista de Articulos</h3>
+          </div>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm table-hover table-bordered">
+              <thead class="dx-header-row">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center" id="safila_{{index}}" *ngFor="let item of listaArticulo; let index = index;">
+                  <td>{{item.nombre}}</td>
+                  <td>{{item.precioUnitario}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="long-title">
+            <h3>Lista de Ordenes</h3>
+          </div>
+
+          <div class="table-responsive mt-2">
+            <table class="table table-sm table-hover table-bordered">
+              <thead class="dx-header-row">
+                <tr>
+                  <th scope="col">Nombres</th>
+                  <th scope="col">Apellidos</th>
+                  <th scope="col">Ordenes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center" id="safila_{{index}}" *ngFor="let item of listaOrdenes; let index = index;">
+                  <td>{{item.cliente.nombres}}</td>
+                  <td>{{item.cliente.apellidos}}</td>
+                  <td> <ol> <li *ngFor="let orden of item.ordenArticulos;"> {{item.id}} - {{orden.articulo.nombre}} - {{orden.articulo.precioUnitario}}</li></ol></td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="mdCliente" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Cliente</h5>
+      </div>
+      <div class="modal-body tamanio-modal-body">
+        <form [formGroup]="clienteForm" (ngSubmit)="guardarCiente()">
+
+          <label for="nombres">Nombres: </label>
+          <input id="nombres" type="text" formControlName="nombres">
+
+          <label for="apellidos">Apellidos: </label>
+          <input id="apellidos" type="text" formControlName="apellidos"><br/>
+          <button class="btn btn-outline-primary btn-sm" type="submit" [disabled]="clienteForm.invalid">Guadar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="mdArticulo" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Articulo</h5>
+      </div>
+      <div class="modal-body tamanio-modal-body">
+        <form [formGroup]="articuloForm" (ngSubmit)="guardarArticulo()">
+
+          <label for="nombre">Nombre: </label>
+          <input id="nombre" type="text" formControlName="nombre">
+
+          <label for="precioUnitario">Precio: </label>
+          <input id="precioUnitario" type="text" formControlName="precioUnitario"><br/>
+          <button class="btn btn-outline-primary btn-sm" type="submit" [disabled]="articuloForm.invalid">Guadar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="mdOrden" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Orden</h5>
+      </div>
+      <div class="modal-body tamanio-modal-body">
+        <form [formGroup]="articuloForm" (ngSubmit)="guardarOrden()">
+
+          <label for="nombre">Nombre: </label>
+          <input id="nombre" type="text" formControlName="nombre">
+
+          <label for="precioUnitario">Precio: </label>
+          <input id="precioUnitario" type="text" formControlName="precioUnitario"><br/>
+          <button class="btn btn-outline-primary btn-sm" type="submit" [disabled]="articuloForm.invalid">Guadar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
